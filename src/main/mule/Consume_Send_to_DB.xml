@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 				<jms:queue-consumer />
 			</jms:consumer-type>
 		</jms:listener>
-		<logger level="INFO" doc:name="Logger" doc:id="7f70544a-934a-4ae6-8fcc-f98b01937a44" />
+		<logger level="INFO" doc:name="Logger" doc:id="7f70544a-934a-4ae6-8fcc-f98b01937a44" message="-----------------------Sending to DB------------------#[payload]"/>
 		<db:insert doc:name="Insert" doc:id="c4510c74-9cbb-43b4-ad18-470291db74c4" config-ref="Database_Config">
 			<db:sql ><![CDATA[INSERT INTO dataclient.custdata (FirstName, LastName, Email, Age) VALUES (:FirstName, :LastName, :Email, :Age)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{	
