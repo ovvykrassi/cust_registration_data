@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="Consume_Send_to_DBFlow" doc:id="a9006847-5e59-4476-8232-12560344e5ac" >
+		<jms:listener doc:name="On New Message" doc:id="1540ab18-c4a7-4fbe-9378-ebce46d477e5" config-ref="JMS_Config" destination="Cust_Data" ackMode="IMMEDIATE">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="7f70544a-934a-4ae6-8fcc-f98b01937a44" />
+		<db:insert doc:name="Insert" doc:id="c4510c74-9cbb-43b4-ad18-470291db74c4" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO dataclient.custdata (FirstName, LastName, Email, Age) VALUES (:FirstName, :LastName, :Email, :Age)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{	
+  FirstName: payload.FirstName,
+  LastName: payload.LastName,
+  Email: payload.Email,
+  Age: payload.Age
+}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="13fca8fa-10c9-4417-ab28-59a7c53186b4" message="---------------------Data Inserted to DB from ActiveMQ----------------------"/>
+	</flow>
+</mule>

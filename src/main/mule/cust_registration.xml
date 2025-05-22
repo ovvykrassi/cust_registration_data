@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d5a5bd9e-9cc5-422a-8844-4e24b6c96fb5" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="7d636fc3-0f62-4dbb-b9ac-ac052d1682e4" file="${env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="e8c2dda0-db7a-444d-8c97-78b0f7a0bbd2" name="env" value="Dev" />
+	<!-- [STUDIO:"cust_registrationFlow"]<flow name="cust_registrationFlow" doc:id="e0842602-ac8d-4bc1-be2b-5a5047b4830e" >
+		<http:listener doc:name="Listener" doc:id="92a0a33c-bfef-42c5-b073-b47237e2c413" config-ref="HTTP_Listener_config" path="/jms/publish"/>
+		<logger level="INFO" doc:name="before published" doc:id="6d2be77e-f1fc-4c38-898c-500c5d606a40" message="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;Before_published&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-"/>
+		<ee:transform doc:name="cust_data" doc:id="798e79f9-9ea6-4f08-83d5-845fe29be802" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+	FirstName: payload.firstName, 
+    LastName: payload.lastName,  
+    Email: payload.email, 
+    Age: payload.age
+}&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<jms:publish doc:name="Publish" doc:id="5f470366-f285-4ba0-9b29-4e4103c64e24" config-ref="JMS_Config" destination="customer_enrolment_system"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0be8ae79-536e-44b1-aa3a-15115dcb49c0" message="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;data_Published&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;"/>
+	</flow> [STUDIO] -->
+</mule>

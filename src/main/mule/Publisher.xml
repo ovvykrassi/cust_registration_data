@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="88a2f12c-51fe-40e9-879f-44d670fb71ce" >
+		<db:my-sql-connection host="${database.host}" port="${database.port}" user="${database.user}" password="${database.password}" />
+	</db:config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="2f394e8c-f09f-4ee2-a802-34754fd353af" >
+		<jms:active-mq-connection username="${jms.Username}" clientId="${jms.Client id}" >
+			<jms:factory-configuration brokerUrl="tcp://Sura:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="862abfbc-3193-4dc3-82a2-eb64045ec5ca" />
+	<os:object-store name="Object_store1" doc:name="Object store" doc:id="2e6e29ea-6143-4e3f-95e9-7519b5a95b1a" />
+	<!-- [STUDIO:"Consumer_Flow"]<flow name="Consumer_Flow" doc:id="66e9e5bd-ee97-4ecb-88e6-6d4c7208fff8" >
+		<jms:listener doc:name="On New Message" doc:id="55fc7438-a38c-4b7c-b2f8-8ffb4789dbb2" config-ref="JMS_Config" destination="customer_enrolment_system" ackMode="IMMEDIATE"/>
+		<ee:transform doc:name="Transform Message" doc:id="da66e3c0-305c-4b8b-a780-2398377f0497" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<jms:consume doc:name="Consume" doc:id="85e7a873-b131-48f8-bcf5-af620dde7e52" config-ref="JMS_Config" destination="customer_enrolment_system" ackMode="IMMEDIATE"/>
+		<logger level="INFO" doc:name="data_consumed" doc:id="748f5d67-bd1f-4a60-b421-e94aee1b3080" message="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-Consumer_completed_now_sending_to_DB&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; #[payload&#93;"/>
+		<batch:job jobName="Consumer_Batch_Job" doc:id="cad65225-9100-457e-8c41-5060743e9780" maxFailedRecords="-1">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="28d516e6-d0d6-4166-843e-7301e0829a57" acceptPolicy="ALL">
+					<db:insert doc:name="Insert" doc:id="2819e405-b6c8-4506-9137-3f9e35026989" config-ref="Database_Config">
+					<db:sql><![CDATA[INSERT INTO Clients.Customers (FirstName, LastName, Email, Age)
+VALUES (:FirstName, :LastName, :Email, :Age)&#93;&#93;></db:sql>
+					<db:input-parameters><![CDATA[#[{
+    FirstName: payload.FirstName,
+    LastName: payload.LastName,
+    Email: payload.Email,
+    Age: payload.Age
+}&#93;&#93;&#93;></db:input-parameters>
+				</db:insert>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="b5d4f6a6-9d78-4d1a-9bb0-46cdcac79d79" size="100">
+						<ee:transform doc:name="Agregated data" doc:id="4d3dcb94-0917-4602-aff5-17f62b41be8e" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload
+&#93;&#93;></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="On complete" doc:id="9a0a7652-31f3-4e90-b00c-6b86cda37a58" message="#[payload&#93;"/>
+			</batch:on-complete>
+		</batch:job>
+		<ee:transform doc:name="Transform Message" doc:id="dc948389-5e83-44b4-8a23-bf09ecdfaaae" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+	"message": "Customer inserted."
+}&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow> [STUDIO] -->
+	<flow name="Consumer_Flow1" doc:id="25fa094c-cfae-4f19-a709-121738eccc7b" >
+		<scheduler doc:name="Scheduler" doc:id="f3bde7f5-97d4-4643-bc4c-79431e4ff218" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="" doc:id="1d545d24-c013-427e-a14d-7ad06023cdb5" message="-----------------------------Started--------------------------"/>
+		<os:retrieve doc:name="Retrieve" doc:id="e1353766-4069-4479-90a4-359d2b2eb844" key="CustomerID" target="watermark" objectStore="Object_store1">
+			<os:default-value ><![CDATA[0]]></os:default-value>
+		</os:retrieve>
+		<logger level="INFO" doc:name="After_retriev" doc:id="e0353aee-ed50-44aa-8d67-d0ba839e9474" message="------------------------After_retriev------------------ #[payload]"/>
+		<db:select doc:name="Select from DB1" doc:id="b5a70364-8796-4163-b2e9-14383b1d84a3" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * from clients.customers WHERE CustomerID > :CustomerID ORDER BY CustomerID ASC LIMIT 100;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+    CustomerID: vars.watermark
+}]]]></db:input-parameters>
+		</db:select>
+		<logger level="INFO" doc:name="After_select_CustomerID" doc:id="b1abcf1f-911a-4f48-bafd-75478570fad8" message="----------------------- After_select_CustomerID-------------------  #[vars.watermark]"/>
+		<os:store doc:name="Store" doc:id="717caf78-4207-45ff-b7bc-f0bc3ea8c582" key="CustomerID" objectStore="Object_store1">
+			<os:value ><![CDATA[#[max (payload map $.CustomerID)]]]></os:value>
+		</os:store>
+		<logger level="INFO" doc:name="Logger" doc:id="a0efb3a0-62f1-4ea9-af5e-f04525018ab8" message="-----------------------Max-CustID-------------- [payload]"/>
+		<batch:job jobName="Consumer_Batch_Job" doc:id="2170a327-24fc-491c-96a7-d1d1982f3f32" maxFailedRecords="-1">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="8241a23a-9c94-45fa-bd3f-9436c1f101fc" >
+					<logger level="INFO" doc:name="Logger" doc:id="ee0fc46a-0581-4eab-9d7d-d19e044ca4dc" message="----------------Before_publish_to_Activ_mq------------------------ #[payload]" />
+					<ee:transform doc:name="Transform Message" doc:id="6811a418-32d7-40ab-96d3-c146aec5581e">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<jms:publish doc:name="Publish" doc:id="6b7660f8-dc08-417a-bf38-b9e89e53aa5b" config-ref="JMS_Config" destination="Cust_Data"/>
+					<!-- [STUDIO:"Batch Aggregator"]<batch:aggregator doc:name="Batch Aggregator" doc:id="ca4fa8cb-ea14-4f85-8d77-1d8607d90633" size="100">
+						<logger level="INFO" doc:name="Logger" doc:id="dcc446fb-78b3-455c-918d-5ae75556e68d" message="&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-Bulk_insert_started&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;- #[payload&#93; "/>
+						<db:bulk-insert doc:name="Bulk insert" doc:id="416458a2-d729-4754-95d5-a5c77e246496" config-ref="Database_Config">
+							<db:bulk-input-parameters ><![CDATA[#[payload map {
+	
+  "FirstName": $.FirstName,
+  "LastName": $.LastName,
+  "Email": $.Email,
+  "Age": $.Age
+}&#93;&#93;&#93;></db:bulk-input-parameters>
+							<db:sql ><![CDATA[INSERT INTO dataclient.custdata (FirstName, LastName, Email, Age) VALUES (:FirstName, :LastName, :Email, :Age)&#93;&#93;></db:sql>
+						</db:bulk-insert>
+					</batch:aggregator> [STUDIO] -->
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<ee:transform doc:name="Transform Message" doc:id="c6003b0b-384f-43e1-97dc-80bd0ea089e3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Data published to Activ mq."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+</mule>
