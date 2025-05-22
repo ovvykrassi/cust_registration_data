@@ -78,7 +78,7 @@ output application/json
 				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<logger level="INFO" doc:name="" doc:id="1d545d24-c013-427e-a14d-7ad06023cdb5" message="-----------------------------Started--------------------------"/>
+		<logger level="INFO" doc:name="" doc:id="1d545d24-c013-427e-a14d-7ad06023cdb5" message="----------------------------- Flow Started--------------------------"/>
 		<os:retrieve doc:name="Retrieve" doc:id="e1353766-4069-4479-90a4-359d2b2eb844" key="CustomerID" target="watermark" objectStore="Object_store1">
 			<os:default-value ><![CDATA[0]]></os:default-value>
 		</os:retrieve>
@@ -123,6 +123,7 @@ payload]]></ee:set-payload>
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="0f15b77e-a96d-41b6-a545-5d7d48dd6952" message="#[payload]"/>
 				<ee:transform doc:name="Transform Message" doc:id="c6003b0b-384f-43e1-97dc-80bd0ea089e3" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
