@@ -11,3 +11,6 @@ database:
 jms:
   Username: "admin"
   Client id: "admin"
+ 
+log:
+  message: "Welcome to CICD Process"   

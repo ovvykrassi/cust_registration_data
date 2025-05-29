@@ -20,6 +20,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 	<os:object-store name="Object_store" doc:name="Object store" doc:id="c9f2a87d-900b-45d5-b74e-b5a224faac1c" />
 	<os:object-store name="Object_store1" doc:name="Object store" doc:id="f81999f9-b764-445f-886d-2f0afc391bea" />
 	<os:object-store name="Object_store2" doc:name="Object store" doc:id="98c4b869-6526-4e7b-abf3-60f92dc2e996" />
+	<os:object-store name="Object_store3" doc:name="Object store" doc:id="2e7bee21-5907-49e8-bc27-dde7529d74dc" />
 	<!-- [STUDIO:"Consumer_Flow"]<flow name="Consumer_Flow" doc:id="66e9e5bd-ee97-4ecb-88e6-6d4c7208fff8" >
 		<jms:listener doc:name="On New Message" doc:id="55fc7438-a38c-4b7c-b2f8-8ffb4789dbb2" config-ref="JMS_Config" destination="customer_enrolment_system" ackMode="IMMEDIATE"/>
 		<ee:transform doc:name="Transform Message" doc:id="da66e3c0-305c-4b8b-a780-2398377f0497" >
@@ -80,7 +81,7 @@ output application/json
 			</scheduling-strategy>
 		</scheduler>
 		<logger level="INFO" doc:name="" doc:id="1d545d24-c013-427e-a14d-7ad06023cdb5" message="----------------------------- Flow Started--------------------------"/>
-		<os:retrieve doc:name="Retrieve" doc:id="e1353766-4069-4479-90a4-359d2b2eb844" key="CustomerID" target="watermark" objectStore="Object_store2">
+		<os:retrieve doc:name="Retrieve" doc:id="e1353766-4069-4479-90a4-359d2b2eb844" key="CustomerID" target="watermark" objectStore="Object_store3">
 			<os:default-value ><![CDATA[0]]></os:default-value>
 		</os:retrieve>
 		<logger level="INFO" doc:name="After_retriev" doc:id="e0353aee-ed50-44aa-8d67-d0ba839e9474" message="------------------------After_retriev------------------ #[payload]"/>
@@ -91,7 +92,7 @@ output application/json
 }]]]></db:input-parameters>
 		</db:select>
 		<logger level="INFO" doc:name="After_select_CustomerID" doc:id="b1abcf1f-911a-4f48-bafd-75478570fad8" message="----------------------- After_select_CustomerID-------------------  #[vars.watermark]"/>
-		<os:store doc:name="Store" doc:id="717caf78-4207-45ff-b7bc-f0bc3ea8c582" key="CustomerID" objectStore="Object_store2">
+		<os:store doc:name="Store" doc:id="717caf78-4207-45ff-b7bc-f0bc3ea8c582" key="CustomerID" objectStore="Object_store3">
 			<os:value ><![CDATA[#[max (payload map $.CustomerID)]]]></os:value>
 		</os:store>
 		<logger level="INFO" doc:name="Logger" doc:id="a0efb3a0-62f1-4ea9-af5e-f04525018ab8" message="-----------------------Max-CustID-------------- [payload]"/>
