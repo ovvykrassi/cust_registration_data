@@ -13,4 +13,11 @@ jms:
   Client id: "admin"
  
 log:
-  message: "Welcome to CICD Process"   
+  message: "Welcome to CICD Process" 
+ 
+deployment:
+  app:
+    runtime: 4.9.0
+  region: us-east-2         
+  workers: 1
+  workerType: MICRO
