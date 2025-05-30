@@ -21,8 +21,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 	<os:object-store name="Object_store1" doc:name="Object store" doc:id="f81999f9-b764-445f-886d-2f0afc391bea" />
 	<os:object-store name="Object_store2" doc:name="Object store" doc:id="98c4b869-6526-4e7b-abf3-60f92dc2e996" />
 	<os:object-store name="Object_store3" doc:name="Object store" doc:id="2e7bee21-5907-49e8-bc27-dde7529d74dc" />
-	<configuration-properties doc:name="Configuration properties" doc:id="73e84b0a-cc53-42ef-9b71-fc2df3128ee2" file="${env}.yaml" />
-	<global-property doc:name="Global Property" doc:id="28869c02-50ec-4726-ac2b-0f4818588b8f" name="env" value="Dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="73e84b0a-cc53-42ef-9b71-fc2df3128ee2" file="Dev.yaml" />
 	<!-- [STUDIO:"Consumer_Flow"]<flow name="Consumer_Flow" doc:id="66e9e5bd-ee97-4ecb-88e6-6d4c7208fff8" >
 		<jms:listener doc:name="On New Message" doc:id="55fc7438-a38c-4b7c-b2f8-8ffb4789dbb2" config-ref="JMS_Config" destination="customer_enrolment_system" ackMode="IMMEDIATE"/>
 		<ee:transform doc:name="Transform Message" doc:id="da66e3c0-305c-4b8b-a780-2398377f0497" >
