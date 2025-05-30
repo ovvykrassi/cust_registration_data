@@ -46,8 +46,6 @@
                        <mule.env>${env}</mule.env>
                        </properties>
                  </cloudHubDeployment>
-              </configuration>
-				<configuration>
 					<sharedLibraries>
 						<sharedLibrary>
 							<groupId>mysql</groupId>
